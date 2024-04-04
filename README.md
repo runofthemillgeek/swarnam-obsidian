@@ -17,39 +17,39 @@ Settings), enable the plugin and then restart Obsidian.
 To create a new Swarnam block, you need to open a block code snippet and give it the `swarnam` tag
 like so:
 
-```swarnam
-<h1>Hello, world</h1>
-```
+    ```swarnam
+    <h1>Hello, world</h1>
+    ```
 
 When you preview this, it'll show the source and render the HTML side-by-side. You can hover on the
 top-right and click the `</>` icon to edit the snippet to make some changes.
 
 You can also add CSS and JS by separating them with `---*---` like so:
 
-```swarnam
-<h1 id="h1">Hello world</h1>
+    ```swarnam
+    <h1 id="h1">Hello world</h1>
 
----*---
+    ---*---
 
-h1 {
-  font-family: "Manjari";
-  color: red;
-  animation: rainbow 5s ease infinite forwards;
-}
+    h1 {
+    font-family: "Manjari";
+    color: red;
+    animation: rainbow 5s ease infinite forwards;
+    }
 
-@keyframes rainbow {
-  0% { filter: hue-rotate(0); }
-  100% { filter: hue-rotate(360deg); }
-}
+    @keyframes rainbow {
+    0% { filter: hue-rotate(0); }
+    100% { filter: hue-rotate(360deg); }
+    }
 
----*---
+    ---*---
 
-let i = 0;
+    let i = 0;
 
-setInterval(() => {	
-	h1.textContent = `${["Hello", "Hola", "നമസ്കാരം"][i++ % 3]} Obsidian!`;
-}, 1500)
-```
+    setInterval(() => {	
+        h1.textContent = `${["Hello", "Hola", "നമസ്കാരം"][i++ % 3]} Obsidian!`;
+    }, 1500)
+    ```
 
 This'll render the three snippets on the left side and show the preview of a web page that has all
 these 3 blocks injected.
