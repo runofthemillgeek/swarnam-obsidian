@@ -62,3 +62,9 @@ this into Base64 and create a data URI. Finally, an `<iframe>` element is create
 is given as the `src`. Data URIs of mime type `text/html` and base64 enoding can be rendered by most
 browsers including the Chromium renderer Obsidian is built on top of. There are no additional build
 steps involved and thus, this is not a full-blown replacement for something like Sandpack.
+
+## Contributing
+
+Spot any issue? Have a feature request or idea? Feel free to create a new issue in GitHub to
+discuss. (Pretty please do this before you spend your precious time on a PR that might not make into
+this repo).
