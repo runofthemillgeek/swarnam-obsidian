@@ -1,4 +1,4 @@
-<center>
+<div align="center">
 
 <img src="./3dicons-co-icon.png" height="60px">
 
@@ -7,7 +7,7 @@
 A no-frills web playground plugin for Obsidian.
 
 <small>(icon credit: [3dicons](https://3dicons.co))</small>
-</center>
+</div>
 
 ## Usage
 
