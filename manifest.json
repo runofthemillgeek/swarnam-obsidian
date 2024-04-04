@@ -3,7 +3,7 @@
 	"name": "Swarnam",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "A no-frills web code blocks plugin for Obsidian.",
+	"description": "A no-frills web playground plugin for Obsidian.",
 	"author": "runofthemillgeek",
 	"authorUrl": "https://dg.sangeeth.dev",
 	"fundingUrl": "https://dg.sangeeth.dev",

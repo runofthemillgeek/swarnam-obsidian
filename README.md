@@ -1,11 +1,11 @@
 # Swarnam
 
-A no-frills web code blocks plugin for Obsidian.
+A no-frills web playground plugin for Obsidian.
 
 ## Usage
 
 Install the extension from Obsidian community plugins list (you need to enable this first from
-Settings).
+Settings), enable the plugin and then restart Obsidian.
 
 To create a new Swarnam block, you need to open a block code snippet and give it the `swarnam` tag
 like so:

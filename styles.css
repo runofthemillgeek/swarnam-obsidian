@@ -1,8 +1,81 @@
-/*
+.swarnam-root {
+	--swarnam-html-color: #e34c26;
+	--swarnam-css-color: #2965f1;
+	--swarnam-js-color: #f0db4f;
+	--swarnam-box-padding: var(--size-4-3) var(--size-4-4);
+	--swarnam-border-color: var(--divider-color);
+	--swarnam-border-radius: var(--code-radius);
+	--swarnam-source-font: var(--font-monospace);
+	--swarnam-source-font-size: var(--code-size);
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+}
 
-If your plugin does not need CSS, delete this file.
+.swarnam-root.error {
+	display: block;
+	padding: var(--swarnam-box-padding);
+	background-color: var(--code-background);
+	text-align: center;
 
-*/
+	.icon {
+		font-family: "Apple Emoji Color", sans-serif;
+		font-size: 1.5em;
+	}
+}
+
+.swarnam-source-root {
+	flex: 1 1 0;
+	overflow-x: scroll;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+.swarnam-preview {
+	flex: 1 1 0;
+	border: 1px solid var(--swarnam-border-color);
+	border-left: 0;
+	border-top-right-radius: var(--swarnam-border-radius);
+	border-bottom-right-radius: var(--swarnam-border-radius);
+	padding: var(--swarnam-box-padding);
+}
+
+.swarnam-source-container {
+	position: relative;
+	flex: 1 1 0;
+
+	& + & {
+		border-top: 1px solid var(--swarnam-border-color);
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+}
+
+.markdown-rendered .swarnam-source {
+	height: 100%;
+	margin: 0;
+	font-family: var(--swarnam-source-font);
+	font-size: var(--swarnam-source-font-size);
+	white-space: pre;
+}
+
+.swarnam-badge {
+	position: absolute;
+	top: calc(var(--size-4-3) / 1.5);
+	right: calc(var(--size-4-3) / 1.5);
+	font-size: 0.65em;
+}
+
+.swarnam-html-badge {
+	color: var(--swarnam-html-color);
+}
+
+.swarnam-css-badge {
+	color: var(--swarnam-css-color);
+}
+
+.swarnam-js-badge {
+	color: var(--swarnam-js-color);
+}
