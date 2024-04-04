@@ -1,6 +1,11 @@
+<center>
+
+<img src="./3dicons-co-icon.png" height="60px">
+
 # Swarnam
 
 A no-frills web playground plugin for Obsidian.
+</center>
 
 ## Usage
 
