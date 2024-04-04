@@ -1,7 +1,7 @@
 {
 	"id": "swarnam",
 	"name": "Swarnam",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "A no-frills web playground plugin for Obsidian.",
 	"author": "runofthemillgeek",
