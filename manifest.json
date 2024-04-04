@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "swarnam",
+	"name": "Swarnam",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"description": "A no-frills web code blocks plugin for Obsidian.",
+	"author": "runofthemillgeek",
+	"authorUrl": "https://dg.sangeeth.dev",
+	"fundingUrl": "https://dg.sangeeth.dev",
+	"isDesktopOnly": true
 }

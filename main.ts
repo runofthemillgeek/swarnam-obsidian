@@ -1,134 +1,232 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Plugin } from "obsidian";
 
-// Remember to rename these classes and interfaces!
+const PREFIX = "swarnam";
 
-interface MyPluginSettings {
-	mySetting: string;
+const SWARNAM_CSS = `
+.swarnam-root {
+	--${PREFIX}-html-color: #e34c26;
+	--${PREFIX}-css-color: #2965f1;
+	--${PREFIX}-js-color: #f0db4f;
+	--${PREFIX}-box-padding: var(--size-4-3) var(--size-4-4);
+	--${PREFIX}-border-color: var(--divider-color);
+	--${PREFIX}-border-radius: var(--code-radius);
+	--${PREFIX}-source-font: var(--font-monospace);
+	--${PREFIX}-source-font-size: var(--code-size);
+
+	display: flex;
+	align-items: stretch;
+	width: 100%;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+.swarnam-root.error {
+	display: block;
+	padding: var(--${PREFIX}-box-padding);
+	background-color: var(--code-background);
+	text-align: center;
+
+	.icon {
+		font-family: "Apple Emoji Color", sans-serif;
+		font-size: 1.5em;
+	}
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+.swarnam-source-root {
+	flex: 1 1 0;
+	overflow-x: scroll;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
 
+.swarnam-preview {
+	flex: 1 1 0;
+	border: 1px solid var(--${PREFIX}-border-color);
+	border-left: 0;
+	border-top-right-radius: var(--${PREFIX}-border-radius);
+	border-bottom-right-radius: var(--${PREFIX}-border-radius);
+	padding: var(--${PREFIX}-box-padding);
+}
+
+.swarnam-source-container {
+	position: relative;
+	flex: 1 1 0;
+
+	& + & {
+		border-top: 1px solid var(--${PREFIX}-border-color);
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+}
+
+.markdown-rendered .swarnam-source {
+	height: 100%;
+	margin: 0;
+	font-family: var(--${PREFIX}-source-font);
+	font-size: var(--${PREFIX}-source-font-size);
+	white-space: pre;
+}
+
+.swarnam-badge {
+	position: absolute;
+	top: calc(var(--size-4-3) / 1.5);
+	right: calc(var(--size-4-3) / 1.5);
+	font-size: 0.65em;
+}
+
+.swarnam-html-badge {
+	color: var(--${PREFIX}-html-color);
+}
+
+.swarnam-css-badge {
+	color: var(--${PREFIX}-css-color);
+}
+
+.swarnam-js-badge {
+	color: var(--${PREFIX}-js-color);
+}
+`;
+
+function base64ToBytes(base64: string) {
+	const binString = atob(base64);
+	// @ts-expect-error
+	return Uint8Array.from(binString, (m) => m.codePointAt(0));
+}
+
+function bytesToBase64(bytes: Uint8Array) {
+	const binString = Array.from(bytes, (byte) =>
+		String.fromCodePoint(byte)
+	).join("");
+	return btoa(binString);
+}
+
+function asBase64(text: string) {
+	console.log({ text });
+	const b64 = bytesToBase64(new TextEncoder().encode(text));
+	console.log(console.log(new TextDecoder().decode(base64ToBytes(b64))));
+	return b64;
+}
+
+function getIframeDoc(htmlSource: string, cssSource: string, jsSource: string) {
+	const isDarkMode = window.matchMedia(
+		"(prefers-color-scheme: dark)"
+	).matches;
+
+	return `
+		<style>
+			body { font-family: sans-serif; color: ${isDarkMode ? "#fff" : "#000"} }
+		</style>
+		<style>
+		${cssSource}
+		</style>
+		<div class="swarnam-html-container">
+		${htmlSource}
+		</div>
+		<script>
+		${jsSource}
+		</script>
+	`;
+}
+
+function showError(msg: string, root: HTMLElement) {
+	root.classList.add("error");
+	root.createEl("p", { cls: "icon", text: "⚠️" });
+	root.createEl("p", { text: msg });
+}
+
+export default class SwarnamPlugin extends Plugin {
 	async onload() {
-		await this.loadSettings();
+		this.registerMarkdownCodeBlockProcessor(
+			"swarnam",
+			(source, el, ctx) => {
+				const root = el.createDiv({ cls: "swarnam-root" });
+				const head = el.ownerDocument.head;
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
+				head.createEl("style", {
+					text: SWARNAM_CSS,
+				});
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+				let [
+					htmlSource = "",
+					cssSource = "",
+					jsSource = "",
+					// eslint-disable-next-line prefer-const
+					...others
+				] = source.split(/^\s*---\*---\s*$/m);
 
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
+				if (others.length > 0) {
+					showError(
+						"Swarnam only supports HTML, CSS and JS blocks but your snippet has more than 3 blocks.",
+						root
+					);
+					return;
 				}
+
+				htmlSource = htmlSource.trim();
+				cssSource = cssSource.trim();
+				jsSource = jsSource.trim();
+
+				if (!htmlSource) {
+					showError(
+						"A Swarnam block must at least contain HTML",
+						root
+					);
+					return;
+				}
+
+				const sourceRoot = root.createDiv({
+					cls: "swarnam-source-root",
+				});
+
+				const htmlContainer = sourceRoot.createDiv({
+					cls: "swarnam-source-container",
+				});
+				const htmlEl = htmlContainer.createEl("pre", {
+					cls: "swarnam-source swarnam-html-source",
+				});
+				htmlContainer.createDiv({
+					text: "HTML",
+					cls: "swarnam-badge swarnam-html-badge",
+				});
+				htmlEl.setText(htmlSource);
+
+				if (cssSource) {
+					const cssContainer = sourceRoot.createDiv({
+						cls: "swarnam-source-container",
+					});
+					const cssEl = cssContainer.createEl("pre", {
+						cls: "swarnam-source swarnam-css-source",
+					});
+					cssContainer.createDiv({
+						text: "CSS",
+						cls: "swarnam-badge swarnam-css-badge",
+					});
+					cssEl.setText(cssSource);
+				}
+
+				if (jsSource) {
+					const jsContainer = sourceRoot.createDiv({
+						cls: "swarnam-source-container",
+					});
+
+					const jsEl = jsContainer.createEl("pre", {
+						cls: "swarnam-source swarnam-js-source",
+					});
+
+					jsContainer.createDiv({
+						text: "JS",
+						cls: "swarnam-badge swarnam-js-badge",
+					});
+					jsEl.setText(jsSource);
+				}
+
+				const iframeEl = root.createEl("iframe", {
+					cls: "swarnam-preview",
+				});
+
+				iframeEl.src = `data:text/html;base64;charset=UTF-8,${asBase64(
+					getIframeDoc(htmlSource, cssSource, jsSource)
+				)}`;
 			}
-		});
-
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
-
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+		);
 	}
 }
