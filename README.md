@@ -5,6 +5,8 @@
 # Swarnam
 
 A no-frills web playground plugin for Obsidian.
+
+<small>(icon credit: [3dicons](https://3dicons.co))</small>
 </center>
 
 ## Usage
