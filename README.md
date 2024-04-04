@@ -9,6 +9,10 @@ A no-frills web playground plugin for Obsidian.
 <small>(icon credit: [3dicons](https://3dicons.co))</small>
 </div>
 
+## Demo
+
+https://github.com/runofthemillgeek/swarnam-obsidian/assets/2759499/333424b3-2f82-4c1e-9e50-68c837227433
+
 ## Usage
 
 Install the extension from Obsidian community plugins list (you need to enable this first from
