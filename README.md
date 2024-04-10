@@ -6,8 +6,8 @@
 
 A no-frills web playground plugin for Obsidian. Inspired by [MDN playgrounds](https://developer.mozilla.org/en-US/docs/Web/CSS/grid).
 
-<small><i>Swarnam (സ്വർണം)</i> means <i>gold</i> in Malayalam.<br/></small>
-<small>(icon credit: [3dicons](https://3dicons.co))</small>
+<sup><i>Swarnam (സ്വർണം)</i> means <i>gold</i> in Malayalam.<br/></sup>
+<sup>(icon credit: [3dicons](https://3dicons.co))</sup>
 
 </div>
 
