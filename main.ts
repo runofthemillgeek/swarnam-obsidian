@@ -16,9 +16,7 @@ function bytesToBase64(bytes: Uint8Array) {
 }
 
 function asBase64(text: string) {
-	console.log({ text });
 	const b64 = bytesToBase64(new TextEncoder().encode(text));
-	console.log(console.log(new TextDecoder().decode(base64ToBytes(b64))));
 	return b64;
 }
 
