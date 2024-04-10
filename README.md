@@ -4,7 +4,7 @@
 
 # Swarnam
 
-A no-frills web playground plugin for Obsidian.
+A no-frills web playground plugin for Obsidian. Inspired by [MDN playgrounds](https://developer.mozilla.org/en-US/docs/Web/CSS/grid).
 
 <small>(icon credit: [3dicons](https://3dicons.co))</small>
 </div>
