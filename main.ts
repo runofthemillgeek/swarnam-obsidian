@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin } from "obsidian";
+import { Plugin, loadPrism } from "obsidian";
 import { SwarnamMode } from "./mode";
 
 const PREFIX = "swarnam";
@@ -49,12 +49,21 @@ function showError(msg: string, root: HTMLElement) {
 }
 
 export default class SwarnamPlugin extends Plugin {
-	async onload() {
-        this.register(SwarnamMode())
+    private prismLoaded = false
 
+	async onload() {
+        // add highlight in edit mode
+        this.register(SwarnamMode())
+        
 		this.registerMarkdownCodeBlockProcessor(
 			"swarnam",
-			(source, el, ctx) => {
+			async (source, el, ctx) => {
+                // load Prism.js to add highlight in preview mode
+                if(!this.prismLoaded) {
+                    await loadPrism()
+                    this.prismLoaded = true
+                }
+
 				const root = el.createDiv({ cls: `${PREFIX}-root` });
 
 				let [
@@ -99,7 +108,7 @@ export default class SwarnamPlugin extends Plugin {
 					text: "HTML",
 					cls: `${PREFIX}-badge ${PREFIX}-html-badge`,
 				});
-				htmlEl.setText(htmlSource);
+				htmlEl.innerHTML = h(htmlSource, "html");
 
 				if (cssSource) {
 					const cssContainer = sourceRoot.createDiv({
@@ -112,7 +121,7 @@ export default class SwarnamPlugin extends Plugin {
 						text: "CSS",
 						cls: `${PREFIX}-badge ${PREFIX}-css-badge`,
 					});
-					cssEl.setText(cssSource);
+                    cssEl.innerHTML = h(cssSource, "css");
 				}
 
 				if (jsSource) {
@@ -128,7 +137,7 @@ export default class SwarnamPlugin extends Plugin {
 						text: "JS",
 						cls: `${PREFIX}-badge ${PREFIX}-js-badge`,
 					});
-					jsEl.setText(jsSource);
+                    jsEl.innerHTML = h(jsSource, "javascript");
 				}
 
 				const iframeEl = root.createEl("iframe", {
@@ -141,4 +150,9 @@ export default class SwarnamPlugin extends Plugin {
 			}
 		);
 	}
+}
+
+function h(code: string, mode: string) {
+    // @ts-ignore
+    return Prism.highlight(code, Prism.languages[mode], mode);
 }
