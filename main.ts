@@ -1,4 +1,5 @@
-import { Plugin } from "obsidian";
+import { MarkdownView, Plugin } from "obsidian";
+import { SwarnamMode } from "./mode";
 
 const PREFIX = "swarnam";
 
@@ -49,6 +50,8 @@ function showError(msg: string, root: HTMLElement) {
 
 export default class SwarnamPlugin extends Plugin {
 	async onload() {
+        this.register(SwarnamMode())
+
 		this.registerMarkdownCodeBlockProcessor(
 			"swarnam",
 			(source, el, ctx) => {
